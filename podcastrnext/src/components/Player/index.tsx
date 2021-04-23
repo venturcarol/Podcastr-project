@@ -1,6 +1,17 @@
+import { useContext } from 'react';
+import { PlayerContext } from '../../contexts/PlayerContext';
+import Image from 'next/image';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css'
+
 import styles from './styles.module.scss';
 
+
 export function Player() {
+  const { episodeList, currentEpisodeIndex } = useContext(PlayerContext)
+
+  const episode = episodeList[currentEpisodeIndex];
+
   return (
     <div className={styles.playerContainer}>
       <header>
@@ -8,15 +19,37 @@ export function Player() {
         <strong>Tocando agora</strong>
       </header>
 
-      <div className={styles.emptyPlayer}>
-        <strong>Selecione um podcast para ouvir</strong>
-      </div>
+      { episode ? (
+        <div className={styles.currentEpisode}>
+          <Image 
+          width={592} 
+          height={592} 
+          src={episode.thumbnail} 
+          objectFit="cover" 
+          />
 
-      <footer className={styles.empty}> 
+          <strong>{episode.title}</strong>
+          <span>{episode.members}</span>
+        </div>
+      ) : (
+        <div className={styles.emptyPlayer}>
+          <strong>Selecione um podcast para ouvir</strong>
+        </div>
+      )}
+
+      <footer className={!episode ? styles.empty : ''}> 
         <div className={styles.progress}>
           <span>00:00</span>
           <div className={styles.slider}>
-            <div className={styles.emptySlider} />
+            { episode ? (
+              <Slider 
+                trackStyle={{ backgroundColor: '#84d361'}}
+                railStyle={{ backgroundColor: '#9f75ff'}}
+                handleStyle={{ backgroundColor: '#84d361', borderWidth: 4}}
+              />
+            ) : (
+              <div className={styles.emptySlider} />
+            )}
           </div>
           <span>00:00</span>
         </div>
